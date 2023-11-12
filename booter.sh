@@ -40,15 +40,15 @@ lsblk
 
 # Prompt the user for the disk to install to.
 echo "Please enter the disk to install to. (Example: /dev/sda, /dev/nvme0n1)"
-read -p DISK
+read DISK
 
 # Prompt the user for the hostname of the system.
 echo "Please enter the hostname of the system."
-read -p HOSTNAME
+read HOSTNAME
 
 # Prompt the user for the username of the user account to be created.
 echo "Please enter the username of the user account to be created."
-read -p USERNAME
+read USERNAME
 
 #Password comes later.
 
@@ -56,7 +56,7 @@ read -p USERNAME
 TIMEZONE=""
 until [ -f "/usr/share/zoneinfo/$TIMEZONE" ]; do
     echo "Please enter your timezone. (Example: America/New_York)"
-    read -p TIMEZONE
+    read dTIMEZONE
 done
 
 ## STAGE 2 : PARTITIONING ##
@@ -66,7 +66,7 @@ echo "The following disk will be partitioned: $DISK"
 echo "This will erase all data on the disk."
 echo "Are you sure you want to continue? (y/n)"
 
-read -p CONFIRM
+read CONFIRM
 if [ "$CONFIRM" != "y" ]; then
     echo "Aborting."
     exit 1
