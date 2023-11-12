@@ -128,4 +128,44 @@ else
     mount --mkdir ${DISK}1 /mnt/boot
 fi
 
+echo "Generating fstab."
+genfstab -U /mnt >> /mnt/etc/fstab ## cant forget this lmfaoooo
+
 echo "Disk $DISK has been partitioned, and mounted."
+
+echo "Updating Mirrorlist."
+#use reflector to update mirrorlist, assume we already have it
+reflector --latest 200 --protocol https --sort rate --save /etc/pacman.d/mirrorlist 
+
+## STAGE 3 : INSTALLATION ##
+
+echo "Installing base system."
+pacstrap -k /mnt base linux linux-firmware sof-firmware NetworkManager vim nano sudo grub efibootmgr elinks git reflector
+
+echo "Base system installed."
+
+## STAGE 4 : SYSTEM CONFIGURATION ##
+echo "Doing final configuration."
+
+arch-chroot /mnt /bin/bash <<EOF
+echo "$HOSTNAME" > /etc/hostname
+ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+hwclock --systohc
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=us" > /etc/vconsole.conf
+systemctl enable NetworkManager
+echo "root:root" | chpasswd
+useradd -m -G wheel -s /bin/bash $USERNAME
+echo "$USERNAME:$USERNAME" | chpasswd
+echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+EOF
+
+echo "Final configuration complete."
+
+umont -R /mnt
+
+echo "Installation complete."
