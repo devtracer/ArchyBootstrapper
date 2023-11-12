@@ -4,7 +4,7 @@
 # and is intended to install a base system to a specified disk, along with some
 # necessary packages and configuration files.
 
-# Propper usage to run this script should be curl https://raw.githubusercontent.com/portalmaster137/ArchyBootstrapper/main/booter.sh | bash
+# Propper usage to run this script should be wget https://raw.githubusercontent.com/portalmaster137/ArchyBootstrapper/main/booter.sh | chmod +x booter.sh | ./booter.sh
 
 ## STAGE 1 : CONFIGURATION ##
 
